@@ -2,7 +2,7 @@ name: Flutter CI and Firebase Distribution
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   build:
