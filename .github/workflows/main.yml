@@ -1,4 +1,4 @@
-name: Flutter App Distribution
+name: Flutter Android Build and Deploy
 
 on:
   push:
@@ -8,19 +8,24 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
+
       - name: Install Flutter
         run: |
           curl -sL https://sdk.flutter.dev/flutter-linux-x64.tar.xz | tar -xf -
-          ./flutter/bin/flutter doctor
-      - name: Install dependencies
-        run: flutter pub get
-      - name: Build app
+          export PATH="$HOME/flutter/bin:$PATH"
+
+      - name: Flutter Doctor
+        run: flutter doctor
+
+      - name: Build Flutter App
         run: flutter build apk
-      - name: Deploy to Firebase
+
+      - name: Deploy Flutter App to Firebase
         run: |
-          firebase app distribution upload --app my-app \
-            --apk build/app/outputs/apk/release/app-release.apk \
-            --release-notes "This is a release note for my app."
+          firebase appdistribution:distribute \
+            --app <YOUR_FIREBASE_APP_ID> \
+            --apk build/app/outputs/apk/release/app-release.apk
             --token $FIREBASE_TOKEN
