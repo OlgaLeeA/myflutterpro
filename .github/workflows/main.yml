@@ -1,0 +1,36 @@
+name: Build and Deploy to Firebase
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Set up Java JDK
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '11'
+
+    - name: Install flutter
+      uses: subosito/flutter-action@v1
+      with:
+        flutter-version: '3.10.0'
+      
+    - name: Get flutter packages
+      run: flutter pub get
+
+    - name: Build APK
+      run: flutter build apk --release
+
+    - name: Deploy to Firebase
+      uses: w9jds/firebase-action@v2.1.1
+      with:
+        args: appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk
+      env:
+        FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
