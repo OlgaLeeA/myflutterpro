@@ -10,9 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: flutter/flutter-action@v1
-        with:
-          flutter-version: "3.0.0"
+      - name: Install Flutter
+        run: |
+          curl -sL https://sdk.flutter.dev/flutter-linux-x64.tar.xz | tar -xf -
+          ./flutter/bin/flutter doctor
       - name: Install dependencies
         run: flutter pub get
       - name: Build app
