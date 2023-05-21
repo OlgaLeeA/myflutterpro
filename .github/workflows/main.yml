@@ -1,41 +1,42 @@
-name: Flutter CI and Firebase Distribution
+name: Flutter CI/CD and Firebase Distribution
 
 on:
   push:
     branches: [ master ]
 
 jobs:
-  build:
+  build_and_deploy:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set up JDK 11
+    - name: Set up Java Environment
       uses: actions/setup-java@v2
       with:
         java-version: '17'
         distribution: 'adopt'
-        
-    - name: Setup Node.js environment
-      uses: actions/setup-node@v3
+
+    - name: Set up Node.js Environment
+      uses: actions/setup-node@v2
       with:
         node-version: '16.x'
 
-    - name: Setup Flutter
+    - name: Set up Flutter Environment
       uses: subosito/flutter-action@v1
       with:
         flutter-version: '3.10.0'
 
-    - name: Get Flutter Packages
+    - name: Install Flutter Dependencies
       run: flutter pub get
 
-    - name: Build APK
+    - name: Build Flutter APK
       run: flutter build apk
 
-    - name: Upload APK to Firebase App Distribution
+    - name: Distribute APK to Firebase
       uses: wzieba/Firebase-Distribution-Github-Action@v1
       with:
         appId: ${{secrets.APPID}}
         token: ${{secrets.FIREBASE_TOKEN}}
         file: build/app/outputs/flutter-apk/app-release.apk
+
